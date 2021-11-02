@@ -2,12 +2,8 @@ import os
 import re
 
 import boto3
-from aws_xray_sdk.core import patch_all, xray_recorder
-from okdata.aws.logging import logging_wrapper
 
 from log_group_subscriber.util import getenv
-
-patch_all()
 
 DESTINATION_ARN = getenv("DESTINATION_ARN")
 SUBSCRIPTION_WHITELIST = os.getenv("SUBSCRIPTION_WHITELIST")
@@ -33,7 +29,7 @@ def _log_group_filter_name(log_group_name):
     return "{}-filter".format(log_group_name.strip("/").replace("/", "-"))
 
 
-def _handle_new_log_group(log_group_name):
+def handle_new_log_group(log_group_name):
     """Handle a new log group.
 
     Return True if a subscription was created, otherwise return False.
@@ -49,9 +45,3 @@ def _handle_new_log_group(log_group_name):
     )
 
     return True
-
-
-@logging_wrapper
-@xray_recorder.capture("handle_new_log_group")
-def handle_new_log_group(event, context):
-    _handle_new_log_group(event["detail"]["requestParameters"]["logGroupName"])

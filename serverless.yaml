@@ -24,10 +24,12 @@ provider:
     STAGE: ${self:provider.stage}
     VERSION: ${self:custom.version}
     SERVICE_NAME: ${self:service}
-    # DESTINATION_ARN: TODO
+    DESTINATION_ARN: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-cloudwatch-event
     SUBSCRIPTION_WHITELIST: (/aws/lambda/[\w-]+)|teams-api|api-catalog-backend
-    SUBSCRIPTION_BLACKLIST: -es-logs-plugin$
+    SUBSCRIPTION_BLACKLIST: -es-logs-plugin$|-cloudwatch-event$
     FILTER_PATTERN: "{ $.function_name = \"*\" }"
+    ES_API_ENDPOINT: ${ssm:/dataplatform/shared/logs-elasticsearch-endpoint}
+    ES_INDEX_PREFIX: dataplatform-services
 package:
   exclude:
     - '**/*'
@@ -35,8 +37,8 @@ package:
     - log_group_subscriber/*.py
 
 functions:
-  handle_new_log_group:
-    handler: log_group_subscriber.handler.handle_new_log_group
+  new-log-group:
+    handler: log_group_subscriber.handlers.new_log_group
     events:
       - cloudwatchEvent:
           event:
@@ -49,6 +51,8 @@ functions:
                 - "logs.amazonaws.com"
               eventName:
                 - "CreateLogGroup"
+  cloudwatch-event:
+    handler: log_group_subscriber.handlers.cloudwatch_event
 
 plugins:
   - serverless-es-logs
