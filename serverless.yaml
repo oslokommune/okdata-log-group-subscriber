@@ -1,4 +1,4 @@
-frameworkVersion: ">=2.10.0 <3.0.0"
+frameworkVersion: ">=2.65.0 <3.0.0"
 
 service: okdata-log-group-subscriber
 
@@ -12,10 +12,10 @@ provider:
     name: ${self:custom.deploymentBucket.${self:provider.stage}, self:custom.deploymentBucket.dev}
     serverSideEncryption: AES256
   deploymentPrefix: deploy
-  rolePermissionsBoundary: "arn:aws:iam::#{AWS::AccountId}:policy/oslokommune/oslokommune-boundary"
+  rolePermissionsBoundary: "arn:aws:iam::${aws:accountId}:policy/oslokommune/oslokommune-boundary"
   iamManagedPolicies:
     - 'arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess'
-    - 'arn:aws:iam::#{AWS::AccountId}:policy/log-group-subscriber-policy'
+    - 'arn:aws:iam::${aws:accountId}:policy/log-group-subscriber-policy'
   tags:
     GIT_REV: ${git:branch}:${git:sha1}
     VERSION: ${self:custom.version}
@@ -54,7 +54,6 @@ plugins:
   - serverless-es-logs
   - serverless-plugin-git-variables
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-python-requirements
 
 resources:
