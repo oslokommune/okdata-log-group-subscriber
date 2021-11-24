@@ -1,7 +1,8 @@
 import gzip
 import json
 from base64 import b64decode
-from datetime import date
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import boto3
 from elasticsearch import Elasticsearch, RequestsHttpConnection
@@ -54,7 +55,10 @@ def _es_body_from_log_event(log_event):
 
 def cloudwatch_to_es(event):
     es = _es_client()
-    index = "{}-{}".format(ES_INDEX_PREFIX, date.today().isoformat())
+    index = "{}-{}".format(
+        ES_INDEX_PREFIX,
+        datetime.now(ZoneInfo("Europe/Oslo")).date().isoformat(),
+    )
     message = json.loads(
         gzip.decompress(b64decode(event["awslogs"]["data"])).decode("utf-8")
     )
