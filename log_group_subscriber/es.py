@@ -1,7 +1,7 @@
 import gzip
 import json
 from base64 import b64decode
-from datetime import datetime
+from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
 import boto3
@@ -53,14 +53,30 @@ def _es_body_from_log_event(log_event):
     return body
 
 
+def _log_date(body):
+    """Try to extract the date from `body`.
+
+    Return the current Norwegian date if unsuccessful.
+    """
+    try:
+        if "timestamp" in body:
+            return date.fromisoformat(body["timestamp"][:10])
+    except ValueError:
+        # Raised when the timestamp doesn't parse. Fall through and return the
+        # current date instead.
+        pass
+
+    return datetime.now(ZoneInfo("Europe/Oslo")).date()
+
+
+def _index_name(body):
+    return "{}-{}".format(ES_INDEX_PREFIX, _log_date(body))
+
+
 def cloudwatch_to_es(event):
     es = _es_client()
-    index = "{}-{}".format(
-        ES_INDEX_PREFIX,
-        datetime.now(ZoneInfo("Europe/Oslo")).date().isoformat(),
-    )
     message = json.loads(
         gzip.decompress(b64decode(event["awslogs"]["data"])).decode("utf-8")
     )
     for body in map(_es_body_from_log_event, message["logEvents"]):
-        es.index(index=index, doc_type="log", body=body)
+        es.index(index=_index_name(body), doc_type="log", body=body)
