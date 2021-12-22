@@ -10,19 +10,23 @@ attrs==21.2.0
     # via jsonschema
 aws-xray-sdk==2.8.0
     # via okdata-log-group-subscriber (setup.py)
-boto3==1.19.6
+boto3==1.20.8
     # via okdata-log-group-subscriber (setup.py)
-botocore==1.22.6
+botocore==1.23.9
     # via
     #   aws-xray-sdk
     #   boto3
     #   s3transfer
 certifi==2021.10.8
-    # via requests
+    # via
+    #   elasticsearch
+    #   requests
 charset-normalizer==2.0.7
     # via requests
 ecdsa==0.17.0
     # via python-jose
+elasticsearch==7.13.4
+    # via okdata-log-group-subscriber (setup.py)
 future==0.18.2
     # via aws-xray-sdk
 idna==3.3
@@ -33,7 +37,7 @@ jmespath==0.10.0
     # via
     #   boto3
     #   botocore
-jsonschema==4.1.2
+jsonschema==4.2.1
     # via okdata-sdk
 okdata-aws==1.0.0
     # via okdata-log-group-subscriber (setup.py)
@@ -60,6 +64,9 @@ requests==2.26.0
     #   okdata-aws
     #   okdata-sdk
     #   python-keycloak
+    #   requests-aws4auth
+requests-aws4auth==1.1.1
+    # via okdata-log-group-subscriber (setup.py)
 rsa==4.7.2
     # via python-jose
 s3transfer==0.5.0
@@ -68,17 +75,19 @@ six==1.16.0
     # via
     #   ecdsa
     #   python-dateutil
+    #   requests-aws4auth
 sniffio==1.2.0
     # via anyio
-starlette==0.16.0
+starlette==0.17.1
     # via okdata-aws
 structlog==21.2.0
     # via okdata-aws
-typing-extensions==3.10.0.2
+typing-extensions==4.0.0
     # via pydantic
 urllib3==1.26.7
     # via
     #   botocore
+    #   elasticsearch
     #   requests
-wrapt==1.13.2
+wrapt==1.13.3
     # via aws-xray-sdk

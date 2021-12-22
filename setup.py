@@ -16,6 +16,10 @@ setup(
     install_requires=[
         "aws-xray-sdk",
         "boto3",
+        # XXX: Don't upgrade this package to 7.14 or later, since it doesn't
+        # work with AWS' OpenSearch Service.
+        "elasticsearch<7.14",
         "okdata-aws",
+        "requests-aws4auth",
     ],
 )
