@@ -1,4 +1,4 @@
-frameworkVersion: ">=2.65.0 <3.0.0"
+frameworkVersion: ">=2.69.1 <3.0.0"
 
 service: okdata-log-group-subscriber
 
