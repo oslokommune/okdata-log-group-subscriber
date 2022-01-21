@@ -24,7 +24,7 @@ provider:
     STAGE: ${self:provider.stage}
     VERSION: ${self:custom.version}
     SERVICE_NAME: ${self:service}
-    DESTINATION_ARN: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-cloudwatch-event
+    DESTINATION_ARN: arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-cloudwatch-event
     SUBSCRIPTION_WHITELIST: (/aws/lambda/[\w-]+)|teams-api|api-catalog-backend
     SUBSCRIPTION_BLACKLIST: -es-logs-plugin$|-cloudwatch-event$
     FILTER_PATTERN: "{ $.function_name = \"*\" }"
