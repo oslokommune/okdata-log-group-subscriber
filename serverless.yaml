@@ -1,4 +1,4 @@
-frameworkVersion: ">=2.69.1 <3.0.0"
+frameworkVersion: ">=3.19.0 <4.0.0"
 
 service: okdata-log-group-subscriber
 
@@ -6,16 +6,18 @@ provider:
   name: aws
   runtime: python3.9
   memorySize: 1024
-  region: ${opt:region, 'eu-west-1'}
+  region: eu-west-1
   stage: ${opt:stage, 'dev'}
   deploymentBucket:
     name: ${self:custom.deploymentBucket.${self:provider.stage}, self:custom.deploymentBucket.dev}
     serverSideEncryption: AES256
   deploymentPrefix: deploy
-  rolePermissionsBoundary: "arn:aws:iam::${aws:accountId}:policy/oslokommune/oslokommune-boundary"
-  iamManagedPolicies:
-    - 'arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess'
-    - 'arn:aws:iam::${aws:accountId}:policy/log-group-subscriber-policy'
+  iam:
+    role:
+      permissionsBoundary: "arn:aws:iam::${aws:accountId}:policy/oslokommune/oslokommune-boundary"
+      managedPolicies:
+        - 'arn:aws:iam::${aws:accountId}:policy/log-group-subscriber-policy'
+        - 'arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess'
   tags:
     GIT_REV: ${git:branch}:${git:sha1}
     VERSION: ${self:custom.version}
@@ -30,10 +32,10 @@ provider:
     FILTER_PATTERN: "{ $.function_name = \"*\" }"
     ES_API_ENDPOINT: ${ssm:/dataplatform/shared/logs-elasticsearch-endpoint}
     ES_INDEX_PREFIX: dataplatform-services
+
 package:
-  exclude:
-    - '**/*'
-  include:
+  patterns:
+    - '!**/*'
     - log_group_subscriber/*.py
 
 functions:
