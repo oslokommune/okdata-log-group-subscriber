@@ -11,6 +11,9 @@ following environment variables:
 | [`SUBSCRIPTION_WHITELIST`] | Optional regex. Create subscriptions only for log groups with names matching this.    |
 | [`SUBSCRIPTION_BLACKLIST`] | Optional regex. Don't create subscriptions for log groups with names containing this. |
 
+Note that CloudTrail logging *must* be enabled on the AWS account in order for
+this component to be able to subscribe to `CreateLogGroup` events.
+
 ## Tests
 
 Tests are run using [tox](https://pypi.org/project/tox/): `make test`
