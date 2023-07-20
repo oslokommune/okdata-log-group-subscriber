@@ -1,6 +1,6 @@
 # okdata-log-group-subscriber
 
-AWS Lambda function for automatically setting up subcriptions to new CloudWatch
+AWS Lambda function for automatically setting up subscriptions to new CloudWatch
 Log Groups when they are created. Configure the function by setting the
 following environment variables:
 
