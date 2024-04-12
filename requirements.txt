@@ -29,7 +29,7 @@ ecdsa==0.17.0
     # via python-jose
 elasticsearch==7.13.4
     # via okdata-log-group-subscriber (setup.py)
-idna==3.3
+idna==3.7
     # via
     #   anyio
     #   requests
