@@ -84,7 +84,7 @@ starlette==0.36.2
     # via okdata-aws
 structlog==21.2.0
     # via okdata-aws
-typing-extensions==4.0.0
+typing-extensions==4.11.0
     # via pydantic
 urllib3==1.26.18
     # via
