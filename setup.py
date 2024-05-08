@@ -19,7 +19,7 @@ setup(
         # XXX: Don't upgrade this package to 7.14 or later, since it doesn't
         # work with AWS' OpenSearch Service.
         "elasticsearch<7.14",
-        "okdata-aws>=2,<3",
+        "okdata-aws>=4.1",
         "requests-aws4auth",
         # Not used directly, it's a transitive dependency from `aws-xray-sdk`,
         # but we need version 1.14 or above to make it work with Python 3.11.
