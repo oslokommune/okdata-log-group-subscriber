@@ -35,7 +35,7 @@ def _es_client():
             use_ssl=True,
             verify_certs=True,
             connection_class=RequestsHttpConnection,
-            timeout=2,
+            timeout=4,
         )
     return _ES_CLIENT
 
