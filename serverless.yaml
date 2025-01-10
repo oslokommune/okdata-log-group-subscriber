@@ -56,6 +56,7 @@ functions:
                 - "CreateLogGroup"
   cloudwatch-event:
     handler: log_group_subscriber.handlers.cloudwatch_event
+    timeout: 10
 
 plugins:
   - serverless-better-credentials # must be first
