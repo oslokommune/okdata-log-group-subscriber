@@ -8,8 +8,8 @@ following environment variables:
 |----------------------------|---------------------------------------------------------------------------------------|
 | `DESTINATION_ARN`          | ARN of the resource to set up subscriptions for.                                      |
 | `FILTER_PATTERN`           | Only log entries matching this pattern are sent to the destination.                   |
-| [`SUBSCRIPTION_WHITELIST`] | Optional regex. Create subscriptions only for log groups with names matching this.    |
-| [`SUBSCRIPTION_BLACKLIST`] | Optional regex. Don't create subscriptions for log groups with names containing this. |
+| [`SUBSCRIPTION_ALLOWLIST`] | Optional regex. Create subscriptions only for log groups with names matching this.    |
+| [`SUBSCRIPTION_DENYLIST`]  | Optional regex. Don't create subscriptions for log groups with names containing this. |
 
 Note that CloudTrail logging *must* be enabled on the AWS account in order for
 this component to be able to subscribe to `CreateLogGroup` events.

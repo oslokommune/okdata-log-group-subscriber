@@ -6,19 +6,19 @@ import boto3
 from log_group_subscriber.util import getenv
 
 DESTINATION_ARN = getenv("DESTINATION_ARN")
-SUBSCRIPTION_WHITELIST = os.getenv("SUBSCRIPTION_WHITELIST")
-SUBSCRIPTION_BLACKLIST = os.getenv("SUBSCRIPTION_BLACKLIST")
+SUBSCRIPTION_ALLOWLIST = os.getenv("SUBSCRIPTION_ALLOWLIST")
+SUBSCRIPTION_DENYLIST = os.getenv("SUBSCRIPTION_DENYLIST")
 FILTER_PATTERN = getenv("FILTER_PATTERN")
 
 
 def _should_subscribe(log_group_name):
     """Return True if a subscription should be made for `log_group_name`."""
-    if SUBSCRIPTION_WHITELIST:
-        if not re.compile(SUBSCRIPTION_WHITELIST).fullmatch(log_group_name):
+    if SUBSCRIPTION_ALLOWLIST:
+        if not re.compile(SUBSCRIPTION_ALLOWLIST).fullmatch(log_group_name):
             return False
 
-    if SUBSCRIPTION_BLACKLIST:
-        if re.compile(SUBSCRIPTION_BLACKLIST).search(log_group_name):
+    if SUBSCRIPTION_DENYLIST:
+        if re.compile(SUBSCRIPTION_DENYLIST).search(log_group_name):
             return False
 
     return True
