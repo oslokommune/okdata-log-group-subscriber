@@ -4,7 +4,7 @@ service: okdata-log-group-subscriber
 
 provider:
   name: aws
-  runtime: python3.11
+  runtime: python3.14
   memorySize: 1024
   region: eu-west-1
   stage: ${opt:stage, 'dev'}
@@ -27,12 +27,9 @@ provider:
     STAGE: ${self:provider.stage}
     VERSION: ${self:custom.version}
     SERVICE_NAME: ${self:service}
-    DESTINATION_ARN: arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-cloudwatch-event
-    SUBSCRIPTION_WHITELIST: (/aws/lambda/[\w-]+)|teams-api|api-catalog-backend
-    SUBSCRIPTION_BLACKLIST: -es-logs-plugin$|-cloudwatch-event$
+    DESTINATION_ARN: arn:aws:lambda:${aws:region}:${aws:accountId}:function:dataspeilet-${self:provider.stage}-datadog-forwarder
+    SUBSCRIPTION_ALLOWLIST: /aws/lambda/[\w-]+
     FILTER_PATTERN: "{ $.function_name = \"*\" }"
-    ES_API_ENDPOINT: ${ssm:/dataplatform/shared/logs-elasticsearch-endpoint}
-    ES_INDEX_PREFIX: dataplatform-services
 
 package:
   patterns:
@@ -54,9 +51,6 @@ functions:
                 - "logs.amazonaws.com"
               eventName:
                 - "CreateLogGroup"
-  cloudwatch-event:
-    handler: log_group_subscriber.handlers.cloudwatch_event
-    timeout: 10
 
 plugins:
   - serverless-better-credentials # must be first
