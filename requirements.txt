@@ -83,7 +83,7 @@ structlog==25.5.0
     # via okdata-aws
 typing-extensions==4.15.0
     # via jwcrypto
-urllib3==2.6.3
+urllib3==2.7.0
     # via
     #   botocore
     #   okdata-sdk
