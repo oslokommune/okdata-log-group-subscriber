@@ -16,6 +16,6 @@ setup(
     install_requires=[
         "aws-xray-sdk>=2.12,<3",
         "boto3>=1.28.11",
-        "okdata-aws>=5",
+        "okdata-aws>=6",
     ],
 )
