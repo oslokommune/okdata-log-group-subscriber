@@ -43,7 +43,7 @@ jsonschema==4.26.0
     # via okdata-sdk
 jsonschema-specifications==2025.9.1
     # via jsonschema
-jwcrypto==1.5.6
+jwcrypto==1.5.7
     # via python-keycloak
 okdata-aws==6.0.0
     # via okdata-log-group-subscriber (setup.py)
