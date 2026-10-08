@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Automatically subscribe new CloudWatch Log Groups to a destination.
+
+Parameters:
+  Stage:
+    Type: String
+    AllowedValues: [dev, prod]
+    Default: dev
+  GitRev:
+    Type: String
+    Description: >-
+      Deployed Git revision, formatted as "branch:short-sha". The deploy status
+      script in dataplatform-config compares the 7-character SHA.
+    Default: unknown
+  Version:
+    Type: String
+    Default: 0.1.0
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub okdata-log-group-subscriber-${Stage}-${AWS::Region}-lambdaRole
+      PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/oslokommune/oslokommune-boundary
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Sub arn:aws:iam::${AWS::AccountId}:policy/log-group-subscriber-policy
+        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+
+  NewLogGroupLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/okdata-log-group-subscriber-${Stage}-new-log-group
+      RetentionInDays: 90
+
+  NewLogGroupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub okdata-log-group-subscriber-${Stage}-new-log-group
+      CodeUri: .
+      Handler: log_group_subscriber.handlers.new_log_group
+      Runtime: python3.14
+      MemorySize: 1024
+      Timeout: 6
+      Role: !GetAtt LambdaExecutionRole.Arn
+      LoggingConfig:
+        LogGroup: !Ref NewLogGroupLogGroup
+      Tags:
+        GIT_REV: !Ref GitRev
+        STAGE: !Ref Stage
+        VERSION: !Ref Version
+      Environment:
+        Variables:
+          GIT_REV: !Ref GitRev
+          STAGE: !Ref Stage
+          VERSION: !Ref Version
+          SERVICE_NAME: okdata-log-group-subscriber
+          DESTINATION_ARN: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:dataspeilet-${Stage}-datadog-forwarder
+          SUBSCRIPTION_ALLOWLIST: '/aws/lambda/[\w-]+'
+          FILTER_PATTERN: '{ $.function_name = "*" }'
+      Events:
+        CreateLogGroup:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.logs
+              detail-type:
+                - AWS API Call via CloudTrail
+              detail:
+                eventSource:
+                  - logs.amazonaws.com
+                eventName:
+                  - CreateLogGroup
